@@ -54,7 +54,7 @@ class Plugin {
      */
     public function __construct() {
         $this->plugin_name = 'wp-rest-cache';
-        $this->version     = '2019.1.2';
+        $this->version     = '2019.1.3';
 
         $this->set_locale();
         $this->define_admin_hooks();
@@ -129,6 +129,7 @@ class Plugin {
 
         add_action( 'save_post', [ $caching, 'save_post' ], 999, 3 );
         add_action( 'delete_post', [ $caching, 'delete_post' ] );
+        add_action( 'transition_post_status', [ $caching, 'transition_post_status' ], 10, 3 );
 
         add_action( 'created_term', [ $caching, 'created_term' ], 999, 3 );
         add_action( 'edited_term', [ $caching, 'edited_term' ], 999, 3 );
