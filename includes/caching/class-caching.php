@@ -1158,7 +1158,7 @@ class Caching {
                 `cache_type` VARCHAR(10) NOT NULL,
                 `request_uri` LONGTEXT NOT NULL,
                 `request_headers` LONGTEXT NOT NULL,
-                `object_type` VARCHAR(200) NOT NULL,
+                `object_type` VARCHAR(191) NOT NULL,
                 `cache_hits` BIGINT(20) NOT NULL,
                 `is_single` TINYINT(1) NOT NULL,
                 `expiration` DATETIME NOT NULL,
@@ -1177,14 +1177,14 @@ class Caching {
 		$query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $this->db_table_relations ) );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		if ( self::DB_VERSION !== $version || $this->db_table_caches !== $wpdb->get_var( $query ) ) {
+		if ( self::DB_VERSION !== $version || $this->db_table_relations !== $wpdb->get_var( $query ) ) {
 			include_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 			$sql_relations =
 				"CREATE TABLE `{$this->db_table_relations}` (
 	            `cache_id` BIGINT(20) NOT NULL,
-	            `object_id` VARCHAR(255) NOT NULL,
-	            `object_type` VARCHAR(200) NOT NULL,
+	            `object_id` VARCHAR(191) NOT NULL,
+	            `object_type` VARCHAR(191) NOT NULL,
 	            PRIMARY KEY (`cache_id`, `object_id`),
 	            INDEX `cache_id` (`cache_id`),
 	            INDEX `object` (`object_id`, `object_type`)
