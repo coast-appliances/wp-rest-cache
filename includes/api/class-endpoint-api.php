@@ -94,6 +94,14 @@ class Endpoint_Api {
 		if ( isset( $uri_parts['query'] ) && ! empty( $uri_parts['query'] ) ) {
 			parse_str( $uri_parts['query'], $params );
 			ksort( $params );
+			$uncached_parameters = get_option( 'wp_rest_cache_uncached_parameters', [] );
+			if ( $uncached_parameters ) {
+				foreach ( $uncached_parameters as $uncached_parameter ) {
+					if ( isset( $params[ $uncached_parameter ] ) ) {
+						unset( $params[ $uncached_parameter ] );
+					}
+				}
+			}
 			$request_path .= '?' . http_build_query( $params );
 		}
 
@@ -228,9 +236,10 @@ class Endpoint_Api {
 	 * @return bool True if no caching should be applied, false if caching can be applied.
 	 */
 	public function skip_caching() {
-		// Only cache GET-requests.
+		// Default only cache GET-requests.
+		$allowed_request_methods = get_option( 'wp_rest_cache_allowed_request_methods', [ 'GET' ] );
 		// No filter_input, see https://stackoverflow.com/questions/25232975/php-filter-inputinput-server-request-method-returns-null/36205923.
-		if ( 'GET' !== filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING ) ) {
+		if ( ! in_array( filter_var( $_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING ), $allowed_request_methods, true ) ) {
 			return true;
 		}
 
@@ -346,13 +355,13 @@ class Endpoint_Api {
 		 */
 		$allowed_endpoints = apply_filters( 'wp_rest_cache/allowed_endpoints', $item_allowed_endpoints );
 		if ( $original_allowed_endpoints !== $allowed_endpoints ) {
-			update_option( 'wp_rest_cache_allowed_endpoints', $allowed_endpoints );
+			update_option( 'wp_rest_cache_allowed_endpoints', $allowed_endpoints, false );
 		}
 
 		$original_rest_prefix = get_option( 'wp_rest_cache_rest_prefix' );
 		$rest_prefix          = rest_get_url_prefix();
 		if ( $original_rest_prefix !== $rest_prefix ) {
-			update_option( 'wp_rest_cache_rest_prefix', $rest_prefix );
+			update_option( 'wp_rest_cache_rest_prefix', $rest_prefix, false );
 		}
 
 		$original_cacheable_request_headers = get_option( 'wp_rest_cache_cacheable_request_headers', [] );
@@ -368,7 +377,39 @@ class Endpoint_Api {
 		 */
 		$cacheable_request_headers = apply_filters( 'wp_rest_cache/cacheable_request_headers', $original_cacheable_request_headers );
 		if ( $original_cacheable_request_headers !== $cacheable_request_headers ) {
-			update_option( 'wp_rest_cache_cacheable_request_headers', $cacheable_request_headers );
+			update_option( 'wp_rest_cache_cacheable_request_headers', $cacheable_request_headers, false );
+		}
+
+		$original_allowed_request_methods = get_option( 'wp_rest_cache_allowed_request_methods', [ 'GET' ] );
+
+		/**
+		 * Override cache-enabled request methods.
+		 *
+		 * Allows to override the request methods that will be cached by the WP REST Cache plugin.
+		 *
+		 * @since 2020.1.0
+		 *
+		 * @param array $original_allowed_request_methods An array of request_methods that are allowed to be cached.
+		 */
+		$allowed_request_methods = apply_filters( 'wp_rest_cache/allowed_request_methods', $original_allowed_request_methods );
+		if ( $original_allowed_request_methods !== $allowed_request_methods ) {
+			update_option( 'wp_rest_cache_allowed_request_methods', $allowed_request_methods, false );
+		}
+
+		$original_uncached_parameters = get_option( 'wp_rest_cache_uncached_parameters', [] );
+
+		/**
+		 * Filter uncached query parameters.
+		 *
+		 * Allows to specify which query parameters should be omitted from the cacheable query string.
+		 *
+		 * @since 2020.1.0
+		 *
+		 * @param array $original_uncached_parameters An array of query parameters that should be omitted from the cacheable query string.
+		 */
+		$uncached_parameters = apply_filters( 'wp_rest_cache/uncached_parameters', $original_uncached_parameters );
+		if ( $original_uncached_parameters !== $uncached_parameters ) {
+			update_option( 'wp_rest_cache_uncached_parameters', $uncached_parameters, false );
 		}
 	}
 

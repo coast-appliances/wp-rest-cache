@@ -2,7 +2,7 @@
 Contributors: acato, rockfire, yoeridekker
 Tags: cache, wp-rest, wp-rest-api, api, rest, rest cache, rest api cache
 Requires at least: 4.7
-Tested up to: 5.2
+Tested up to: 5.3
 Requires PHP: 5.5
 Stable tag: trunk
 License: GPLv3
@@ -166,6 +166,13 @@ add_filter('wp_rest_cache/settings_capability', 'wprc_change_settings_capability
 5. Cache details page - Cache data.
 
 == Changelog ==
+
+= 2020.1.0 =
+Release Date: January 16th, 2020
+
+Feature: Added a filter to ignore specific query string parameters.
+Feature: Make allowed request methods filterable.
+Bugfix: Make options not autoload.
 
 = 2019.4.5 =
 Release Date: November 22nd, 2019

@@ -834,7 +834,7 @@ class Caching {
 			}
 		} else {
 			$this->is_single = false;
-			if ( count( $data['data'] ) && isset( $data['data'][0] ) ) {
+			if ( count( $data['data'] ) && isset( $data['data'][0] ) && is_array( $data['data'][0] ) ) {
 				if ( array_key_exists( 'type', $data['data'][0] ) ) {
 					return $data['data'][0]['type'];
 				} elseif ( array_key_exists( 'taxonomy', $data['data'][0] ) ) {
@@ -1171,7 +1171,7 @@ class Caching {
 
 			dbDelta( $sql_caches );
 
-			update_option( 'wp_rest_cache_database_version', self::DB_VERSION );
+			update_option( 'wp_rest_cache_database_version', self::DB_VERSION, false );
 		}
 
 		$query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $this->db_table_relations ) );
@@ -1192,7 +1192,7 @@ class Caching {
 
 			dbDelta( $sql_relations );
 
-			update_option( 'wp_rest_cache_database_version', self::DB_VERSION );
+			update_option( 'wp_rest_cache_database_version', self::DB_VERSION, false );
 		}
 
 		if ( version_compare( '2019.4.0', $version, '>' ) ) {
