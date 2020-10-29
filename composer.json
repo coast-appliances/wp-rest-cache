@@ -1,0 +1,26 @@
+{
+    "name": "gaganca/wp-rest-cache",
+    "description": "Fork from http://plugins.svn.wordpress.org/wp-rest-cache/",
+    "type": "wordpress-plugin",
+    "version": "2020.2.1",
+    "keywords": ["plugin", "wordpress", "wp", "cache", "rest-api"],
+    "homepage": "https://github.com/gaganca/wp-rest-cache",
+    "license": "GPL-2.0-only",
+    "authors": [
+      {
+        "name": "Acato",
+        "email": "info@acato.nl",
+        "homepage": "http://acato.nl",
+        "role": "Developer"
+      }
+    ],
+    "support": {
+      "email": "info@acato.nl",
+      "issues": "https://github.com/gaganca/wp-rest-cache/issues"
+    },
+    "require": {
+      "php": ">=5.6",
+      "composer/installers": "^1.4"
+    }
+  }
+  
