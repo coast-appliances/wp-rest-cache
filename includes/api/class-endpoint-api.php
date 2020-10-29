@@ -231,7 +231,10 @@ class Endpoint_Api {
 		if ( empty( $result ) ) {
 			return $result;
 		}
-
+		
+        // force evaluate the result, further detail on TECH-130
+	    $result = json_decode(wp_json_encode($result));
+	
 		$data = array(
 			'data'    => $result,
 			'headers' => $this->response_headers,
